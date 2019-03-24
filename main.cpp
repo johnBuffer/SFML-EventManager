@@ -1,5 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include "event_manager.hpp"
+#include <iostream>
 
 int main()
 {
@@ -8,7 +9,9 @@ int main()
 	shape.setFillColor(sf::Color::Green);
 
 	EventManager evm(window);
-	evm.registerCallback(sf::Event::EventType::Closed, [&]() {window.close(); });
+	evm.registerCallback(sf::Event::EventType::Closed, [&](const sf::Event&) {window.close(); });
+	evm.addKeyCallback(sf::Keyboard::A, sf::Event::EventType::KeyPressed, [&](const sf::Event&) {std::cout << "YEEEES" << std::endl; });
+	evm.addKeyCallback(sf::Keyboard::A, sf::Event::EventType::KeyReleased, [&](const sf::Event&) {std::cout << "NOOOO" << std::endl; });
 
 	while (window.isOpen())
 	{
