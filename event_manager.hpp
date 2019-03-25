@@ -11,65 +11,58 @@ using EventCallback = std::function<void(const sf::Event& event)>;
 template<typename T>
 using EventCallbackMap = std::unordered_map<T, EventCallback>;
 
+/*
+	This class handles Key related events
+*/
 class KeyEventManager
 {
 public:
 	KeyEventManager() = default;
+	~KeyEventManager() = default;
 
-	void processKeypressedEvent(const sf::Event& event) const
-	{
-		processKeyEvent(m_key_pressed_callmap, event);
-	}
-
-	void processReleasedEvent(const sf::Event& event) const
-	{
-		processKeyEvent(m_key_released_callmap, event);
-	}
-
-	void addKeyCallback(sf::Keyboard::Key key_code, sf::Event::EventType type, EventCallback callback)
-	{
-		if (type == sf::Event::KeyPressed)
-		{
-			m_key_pressed_callmap[key_code] = callback;
-		}
-		else if (type == sf::Event::KeyReleased)
-		{
-			m_key_released_callmap[key_code] = callback;
-		}
-	}
-
-private:
-	EventCallbackMap<sf::Keyboard::Key> m_key_pressed_callmap;
-	EventCallbackMap<sf::Keyboard::Key> m_key_released_callmap;
-
-	void processKeyEvent(const EventCallbackMap<sf::Keyboard::Key>& event_map, const sf::Event& event) const
+	void processKeyEvent(const sf::Event& event) const
 	{
 		sf::Keyboard::Key key_code = event.key.code;
-		auto it(event_map.find(key_code));
-		if (it != event_map.end())
+		auto it(m_callmap.find(key_code));
+		if (it != m_callmap.end())
 		{
 			// Call its associated callback
 			(it->second)(event);
 		}
 	}
+
+	void addKeyCallback(sf::Keyboard::Key key_code, EventCallback callback)
+	{
+		m_callmap[key_code] = callback;
+	}
+
+private:
+	EventCallbackMap<sf::Keyboard::Key> m_callmap;
 };
 
 
+/*
+	This class handles any type of event and call its associated callbacks if any.
+	To process key event in a more convenient way its using a KeyManager
+*/
 class EventManager
 {
 public:
 	EventManager(sf::Window& window) :
 		m_window(window)
 	{
-		this->registerCallback(sf::Event::EventType::KeyPressed, [&](const sf::Event& event) {m_key_manager.processKeypressedEvent(event); });
-		this->registerCallback(sf::Event::EventType::KeyReleased, [&](const sf::Event& event) {m_key_manager.processReleasedEvent(event); });
+		// Register key events built in callbacks
+		this->addEventCallback(sf::Event::EventType::KeyPressed, [&](const sf::Event& event) {m_key_pressed_manager.processKeyEvent(event); });
+		this->addEventCallback(sf::Event::EventType::KeyReleased, [&](const sf::Event& event) {m_key_released_manager.processKeyEvent(event); });
 	}
 
-	void registerCallback(sf::Event::EventType type, EventCallback callback)
+	// Attach new callback to an event
+	void addEventCallback(sf::Event::EventType type, EventCallback callback)
 	{
 		m_events_callmap[type] = callback;
 	}
 
+	// Calls events' attached callbacks
 	void processEvents() const
 	{
 		// Iterate over events
@@ -87,6 +80,7 @@ public:
 		}
 	}
 
+	// Removes a callback
 	void removeCallback(sf::Event::EventType type)
 	{
 		// If event type is registred
@@ -98,14 +92,22 @@ public:
 		}
 	}
 
-	void addKeyCallback(sf::Keyboard::Key key_code, sf::Event::EventType type, EventCallback callback)
+	// Adds a key pressed callback
+	void addKeyPressedCallback(sf::Keyboard::Key key_code, EventCallback callback)
 	{
-		m_key_manager.addKeyCallback(key_code, type, callback);
+		m_key_pressed_manager.addKeyCallback(key_code, callback);
+	}
+
+	// Adds a key released callback
+	void addKeyReleasedCallback(sf::Keyboard::Key key_code, EventCallback callback)
+	{
+		m_key_released_manager.addKeyCallback(key_code, callback);
 	}
 
 private:
 	sf::Window& m_window;
 
-	KeyEventManager m_key_manager;
+	KeyEventManager m_key_pressed_manager;
+	KeyEventManager m_key_released_manager;
 	EventCallbackMap<sf::Event::EventType> m_events_callmap;
 };

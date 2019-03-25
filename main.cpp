@@ -5,20 +5,19 @@
 int main()
 {
 	sf::RenderWindow window(sf::VideoMode(200, 200), "Test window");
-	sf::CircleShape shape(100.f);
-	shape.setFillColor(sf::Color::Green);
 
 	EventManager evm(window);
-	evm.registerCallback(sf::Event::EventType::Closed, [&](const sf::Event&) {window.close(); });
-	evm.addKeyCallback(sf::Keyboard::A, sf::Event::EventType::KeyPressed, [&](const sf::Event&) {std::cout << "YEEEES" << std::endl; });
-	evm.addKeyCallback(sf::Keyboard::A, sf::Event::EventType::KeyReleased, [&](const sf::Event&) {std::cout << "NOOOO" << std::endl; });
+	evm.addEventCallback(sf::Event::EventType::Closed, [&](const sf::Event&) {window.close(); });
+	evm.addKeyPressedCallback(sf::Keyboard::A, [&](const sf::Event&) {std::cout << "A Pressed" << std::endl; });
+	evm.addKeyReleasedCallback(sf::Keyboard::A, [&](const sf::Event&) {std::cout << "A released" << std::endl; });
+
+	evm.addEventCallback(sf::Event::EventType::MouseButtonPressed, [&](const sf::Event&) {std::cout << "Mouse button pressed" << std::endl; });
 
 	while (window.isOpen())
 	{
 		evm.processEvents();
 
 		window.clear();
-		window.draw(shape);
 		window.display();
 	}
 
