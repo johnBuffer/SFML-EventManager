@@ -26,16 +26,18 @@ evm.addEventCallback(sf::Event::EventType::Closed, [&](const sf::Event&) {window
 Example of Mouse and Keyboard events handling
 ```cpp
 // Add Key event callback
-evm.addKeyPressedCallback(sf::Keyboard::A, [&](const sf::Event&) {std::cout << "A Pressed" << std::endl; });
-evm.addKeyReleasedCallback(sf::Keyboard::A, [&](const sf::Event&) {std::cout << "A released" << std::endl; });
+using cEvent = const sf::Event&;
+
+evm.addKeyPressedCallback(sf::Keyboard::A, [&](cEvent) {std::cout << "A Pressed" << std::endl; });
+evm.addKeyReleasedCallback(sf::Keyboard::A, [&](cEvent) {std::cout << "A released" << std::endl; });
 
 // Add Mouse button event callback
-evm.addMousePressedCallback(sf::Mouse::Button::Left, [&](const sf::Event&) {std::cout << "Mouse LEFT pressed" << std::endl; });
-evm.addMouseReleasedCallback(sf::Mouse::Button::Left, [&](const sf::Event&) {std::cout << "Mouse LEFT released" << std::endl; });
+evm.addMousePressedCallback(sf::Mouse::Left, [&](cEvent) {std::cout << "Mouse LEFT pressed" << std::endl; });
+evm.addMouseReleasedCallback(sf::Mouse::Left, [&](cEvent) {std::cout << "Mouse LEFT released" << std::endl; });
 
 // Add another Mouse button event callback
-evm.addMousePressedCallback(sf::Mouse::Button::Right, [&](const sf::Event&) {std::cout << "Mouse RIGHT pressed" << std::endl; });
-evm.addMouseReleasedCallback(sf::Mouse::Button::Right, [&](const sf::Event&) {std::cout << "Mouse RIGHT released" << std::endl; });
+evm.addMousePressedCallback(sf::Mouse::Right, [&](cEvent) {std::cout << "Mouse RIGHT pressed" << std::endl; });
+evm.addMouseReleasedCallback(sf::Mouse::Right, [&](cEvent) {std::cout << "Mouse RIGHT released" << std::endl; });
 ```
 
 2. Enjoy clean events pooling loop
