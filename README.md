@@ -25,9 +25,9 @@ evm.addEventCallback(sf::Event::EventType::Closed, [&](const sf::Event&) {window
 
 Example of Mouse and Keyboard events handling
 ```cpp
-// Add Key event callback
 using cEvent = const sf::Event&;
 
+// Add Key event callback
 evm.addKeyPressedCallback(sf::Keyboard::A, [&](cEvent) {std::cout << "A Pressed" << std::endl; });
 evm.addKeyReleasedCallback(sf::Keyboard::A, [&](cEvent) {std::cout << "A released" << std::endl; });
 
