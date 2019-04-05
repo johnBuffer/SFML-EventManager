@@ -4,16 +4,16 @@ Little helper to allow callbacks based event management with [SFML](https://gith
 
 ## Installation
 
-1. Clone repo ❤️
+### 1. Clone repo ❤️
 
-2. Include header
+### 2. Include header
 ```cpp
 #include "event_manager.hpp"
 ```
 
 ## Usage
 
-1. Declare your callbacks
+### 1. Declare your callbacks
 ```cpp
 // Instanciate an events manager
 sfev::EventManager evm(window);
@@ -40,7 +40,7 @@ evm.addMousePressedCallback(sf::Mouse::Right, [&](cEvent) {std::cout << "Mouse R
 evm.addMouseReleasedCallback(sf::Mouse::Right, [&](cEvent) {std::cout << "Mouse RIGHT released" << std::endl; });
 ```
 
-2. Enjoy clean events pooling loop
+### 2. Enjoy clean events pooling loop
 ```cpp
 while (window.isOpen())
 {
