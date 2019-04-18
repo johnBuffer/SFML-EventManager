@@ -7,11 +7,15 @@
 namespace sfev
 {
 
+
+
 // Helper using for shorter types
 using EventCallback = std::function<void(const sf::Event& event)>;
 
 template<typename T>
 using EventCallbackMap = std::unordered_map<T, EventCallback>;
+
+using CstEv = const sf::Event&;
 
 
 /*
@@ -39,7 +43,7 @@ public:
 		}
 	}
 
-	void addCallback(T sub_value, EventCallback callback)
+	void addCallback(const T& sub_value, EventCallback callback)
 	{
 		m_callmap[sub_value] = callback;
 	}
