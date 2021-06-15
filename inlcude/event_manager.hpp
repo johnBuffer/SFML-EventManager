@@ -97,7 +97,7 @@ public:
         m_mouse_released_manager.addCallback(button, callback);
     }
     
-    //
+    // Runs the callback associated with an event
     void executeCallback(const sf::Event& e) const
     {
         auto it(m_events_callmap.find(e.type));
