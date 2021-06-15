@@ -7,8 +7,6 @@
 namespace sfev
 {
 
-
-
 // Helper using for shorter types
 using EventCallback = std::function<void(const sf::Event& event)>;
 
