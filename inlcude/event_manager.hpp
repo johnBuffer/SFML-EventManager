@@ -54,17 +54,19 @@ private:
 class EventMap
 {
 public:
-    EventMap()
+    EventMap(bool use_builtin_helpers = true)
         : m_key_pressed_manager([](const sf::Event& event) {return event.key.code; })
         , m_key_released_manager([](const sf::Event& event) {return event.key.code; })
         , m_mouse_pressed_manager([](const sf::Event& event) {return event.mouseButton.button; })
         , m_mouse_released_manager([](const sf::Event& event) {return event.mouseButton.button; })
     {
-        // Register key events built in callbacks
-        this->addEventCallback(sf::Event::EventType::KeyPressed, [&](const sf::Event& event) {m_key_pressed_manager.processEvent(event); });
-        this->addEventCallback(sf::Event::EventType::KeyReleased, [&](const sf::Event& event) {m_key_released_manager.processEvent(event); });
-        this->addEventCallback(sf::Event::EventType::MouseButtonPressed, [&](const sf::Event& event) {m_mouse_pressed_manager.processEvent(event); });
-        this->addEventCallback(sf::Event::EventType::MouseButtonReleased, [&](const sf::Event& event) {m_mouse_released_manager.processEvent(event); });
+        if (use_builtin_helpers) {
+            // Register key events built in callbacks
+            this->addEventCallback(sf::Event::EventType::KeyPressed, [&](const sf::Event& event) {m_key_pressed_manager.processEvent(event); });
+            this->addEventCallback(sf::Event::EventType::KeyReleased, [&](const sf::Event& event) {m_key_released_manager.processEvent(event); });
+            this->addEventCallback(sf::Event::EventType::MouseButtonPressed, [&](const sf::Event& event) {m_mouse_pressed_manager.processEvent(event); });
+            this->addEventCallback(sf::Event::EventType::MouseButtonReleased, [&](const sf::Event& event) {m_mouse_released_manager.processEvent(event); });
+        }
     }
     
     // Attaches new callback to an event
@@ -136,9 +138,9 @@ private:
 class EventManager
 {
 public:
-    EventManager(sf::Window& window) :
+    EventManager(sf::Window& window, bool use_builtin_helpers) :
         m_window(window),
-        m_event_map()
+        m_event_map(use_builtin_helpers)
     {
     }
 
@@ -191,6 +193,17 @@ public:
     sf::Window& getWindow()
     {
         return m_window;
+    }
+
+    sf::Vector2f getFloatMousePosition() const
+    {
+        const sf::Vector2i mouse_position = sf::Mouse::getPosition(m_window);
+        return { static_cast<float>(mouse_position.x), static_cast<float>(mouse_position.y) };
+    }
+
+    sf::Vector2i getMousePosition() const
+    {
+        return sf::Mouse::getPosition(m_window);
     }
 
 private:
