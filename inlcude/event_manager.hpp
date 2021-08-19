@@ -98,12 +98,14 @@ public:
     }
     
     // Runs the callback associated with an event
-    void executeCallback(const sf::Event& e) const
+    void executeCallback(const sf::Event& e, EventCallback fallback = nullptr) const
     {
         auto it(m_events_callmap.find(e.type));
         if (it != m_events_callmap.end()) {
             // Call its associated callback
             (it->second)(e);
+        } else if (fallback) {
+            fallback(e);
         }
     }
     
@@ -141,12 +143,12 @@ public:
     }
 
     // Calls events' attached callbacks
-    void processEvents() const
+    void processEvents(EventCallback fallback = nullptr) const
     {
         // Iterate over events
         sf::Event event;
         while (m_window.pollEvent(event)) {
-            m_event_map.executeCallback(event);
+            m_event_map.executeCallback(event, fallback);
         }
     }
     
